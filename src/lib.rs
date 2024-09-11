@@ -63,44 +63,58 @@ impl Metadata {
 #[derive(Default, Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct Attribute {
     /// The type of attribute
-    pub trait_type: String,
+    pub trait_type: Option<String>,
     /// The value for that attribute
-    pub value: String,
+    pub value: Option<String>,
 }
 
 impl Attribute {
-    pub fn new(trait_type: impl Into<String>, value: impl Into<String>) -> Self {
-        Self {
-            trait_type: trait_type.into(),
-            value: value.into(),
-        }
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn with_trait_type(mut self, trait_type: impl Into<String>) -> Self {
+        self.trait_type = Some(trait_type.into());
+        self
+    }
+
+    pub fn with_value(mut self, value: impl Into<String>) -> Self {
+        self.value = Some(value.into());
+        self
     }
 }
 
 #[derive(Default, Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct Properties {
     /// Additional files to include with the asset
-    pub files: Vec<AssetFile>,
+    pub files: Option<Vec<AssetFile>>,
     /// A media category for the asset
-    pub category: String,
+    pub category: Option<String>,
 }
 
 impl Properties {
-    pub fn new(category: impl Into<String>, files: Vec<AssetFile>) -> Self {
-        Self {
-            category: category.into(),
-            files,
-        }
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn with_category(mut self, category: impl Into<String>) -> Self {
+        self.category = Some(category.into());
+        self
+    }
+
+    pub fn with_files(mut self, files: Vec<AssetFile>) -> Self {
+        self.files = Some(files);
+        self
     }
 }
 
 #[derive(Default, Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct AssetFile {
     /// The file's URI
-    pub uri: String,
+    pub uri: Option<String>,
     /// The file's type
     #[serde(rename = "type")]
-    pub file_type: String,
+    pub file_type: Option<String>,
     /// Whether the file is served from a CDN.
     pub cdn: Option<bool>,
     /// Defines the file's resolution if applicable
@@ -110,14 +124,18 @@ pub struct AssetFile {
 }
 
 impl AssetFile {
-    pub fn new(uri: impl Into<String>, file_type: impl Into<String>) -> Self {
-        Self {
-            uri: uri.into(),
-            file_type: file_type.into(),
-            cdn: None,
-            resolution: None,
-            size: None,
-        }
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn with_uri(mut self, uri: impl Into<String>) -> Self {
+        self.uri = Some(uri.into());
+        self
+    }
+
+    pub fn with_file_type(mut self, file_type: impl Into<String>) -> Self {
+        self.file_type = Some(file_type.into());
+        self
     }
 
     pub fn set_cdn(&mut self, cdn: bool) {
